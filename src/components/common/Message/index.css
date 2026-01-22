@@ -1,0 +1,19 @@
+/**
+ * Message 消息提示容器样式
+ */
+
+.message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.message-wrapper {
+  pointer-events: auto;
+}

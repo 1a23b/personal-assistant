@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>个人助手 - UI交互预览</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+          sans-serif;
+        overflow: hidden;
+        height: 100vh;
+        position: relative;
+      }
+
+      /* 颜色变量 */
+      :root {
+        --primary-blue: #1890ff;
+        --primary-hover: #40a9ff;
+        --success: #52c41a;
+        --warning: #faad14;
+        --error: #f5222d;
+        --text-primary: #262626;
+        --text-secondary: #595959;
+        --text-tertiary: #8c8c8c;
+        --border: #d9d9d9;
+        --bg-white: #ffffff;
+        --bg-fill: #f5f5f5;
+      }
+
+      /* ========== 轮播背景 ========== */
+      .carousel-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .carousel-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s linear;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .carousel-slide.active {
+        opacity: 1;
+      }
+
+      /* 模拟轮播图 */
+      .carousel-slide:nth-child(1) {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .carousel-slide:nth-child(2) {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+      .carousel-slide:nth-child(3) {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      .carousel-slide:nth-child(4) {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      /* ========== 登录注册页面 ========== */
+      #auth-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      .auth-box {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        width: 400px;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .auth-logo {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 20px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--primary-hover)
+        );
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: white;
+        font-weight: bold;
+      }
+
+      .auth-title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-input {
+        width: 100%;
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      }
+
+      .captcha-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .captcha-img {
+        width: 120px;
+        height: 40px;
+        background: rgba(245, 245, 245, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--text-primary);
+        letter-spacing: 4px;
+      }
+
+      .refresh-btn {
+        width: 40px;
+        height: 40px;
+        background: var(--bg-white);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.2s;
+      }
+
+      .refresh-btn:hover {
+        background: var(--bg-fill);
+      }
+
+      .btn-primary {
+        width: 100%;
+        height: 40px;
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 10px;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      .auth-toggle {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .auth-toggle a {
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .auth-toggle a:hover {
+        text-decoration: underline;
+      }
+
+      /* 登录/注册切换 */
+      .auth-form {
+        display: none;
+      }
+
+      .auth-form.active {
+        display: block;
+      }
+
+      /* ========== 登录后页面 ========== */
+      #home-page {
+        display: none;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header触发按钮 */
+      .header-trigger {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 24px;
+        background: var(--bg-white);
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        font-size: 12px;
+        transition: all 0.3s ease-out;
+      }
+
+      .header-trigger:hover {
+        height: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Header Bar */
+      .header-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--bg-white);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-out;
+        z-index: 99;
+      }
+
+      .header-bar.show {
+        transform: translateY(0);
+      }
+
+      .header-content {
+        width: 1200px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+      }
+
+      .header-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .user-menu {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: background 0.2s;
+      }
+
+      .user-menu:hover {
+        background: var(--bg-fill);
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--primary-hover)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .user-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 160px;
+        background: var(--bg-white);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        display: none;
+        z-index: 100;
+        margin-top: 8px;
+        animation: slideDown 0.2s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .user-dropdown.show {
+        display: block;
+      }
+
+      .user-dropdown-item {
+        padding: 12px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-bottom: 1px solid var(--bg-fill);
+      }
+
+      .user-dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .user-dropdown-item:hover {
+        background: var(--bg-fill);
+      }
+
+      .user-dropdown-item.logout {
+        color: var(--error);
+      }
+
+      /* ========== 主内容区 - 优化为居中布局 ========== */
+      .main-content {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .cards-wrapper {
+        width: 1140px;
+        display: grid;
+        grid-template-columns: 560px 560px;
+        gap: 20px;
+      }
+
+      .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      /* 卡片基础样式 */
+      .card {
+        background: var(--bg-white);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+      }
+
+      .oj-card {
+        height: 320px;
+        perspective: 1000px;
+      }
+
+      .oj-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s ease-in-out;
+        transform-style: preserve-3d;
+      }
+
+      .oj-card-inner.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .oj-card-front,
+      .oj-card-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        padding: 25px;
+        border-radius: 12px;
+        background: var(--bg-white);
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+
+      .oj-card-back {
+        transform: rotateY(180deg);
+      }
+
+      .oj-logo {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 12px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: white;
+        font-weight: bold;
+      }
+
+      .oj-logo.luogu {
+        background: linear-gradient(135deg, #52c41a, #73d13d);
+      }
+
+      .oj-logo.leetcode {
+        background: linear-gradient(135deg, #ffa502, #ff6348);
+      }
+
+      .oj-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+
+      .oj-url {
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-tertiary);
+        margin-bottom: 20px;
+      }
+
+      /* 用户信息展示 */
+      .user-info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .user-rank {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .edit-btn {
+        padding: 5px 14px;
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .edit-btn:hover {
+        background: var(--primary-hover);
+      }
+
+      .user-profile {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .profile-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--primary-hover)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: white;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+
+      .profile-avatar.leetcode {
+        background: linear-gradient(135deg, #ffa502, #ff6348);
+      }
+
+      .profile-info h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+      }
+
+      .profile-stats {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 3px;
+      }
+
+      .difficulty-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .difficulty-item {
+        text-align: center;
+        padding: 10px 8px;
+        border-radius: 8px;
+      }
+
+      .difficulty-item.easy {
+        background: #f6ffed;
+        border: 1px solid #b7eb8f;
+      }
+
+      .difficulty-item.medium {
+        background: #fffbe6;
+        border: 1px solid #ffe58f;
+      }
+
+      .difficulty-item.hard {
+        background: #fff2f0;
+        border: 1px solid #ffccc7;
+      }
+
+      .difficulty-label {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-bottom: 3px;
+      }
+
+      .difficulty-count {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .difficulty-item.easy .difficulty-count {
+        color: var(--success);
+      }
+
+      .difficulty-item.medium .difficulty-count {
+        color: var(--warning);
+      }
+
+      .difficulty-item.hard .difficulty-count {
+        color: var(--error);
+      }
+
+      /* 排行榜卡片 */
+      .rank-card {
+        height: 660px;
+        perspective: 1000px;
+      }
+
+      .rank-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s ease-in-out;
+        transform-style: preserve-3d;
+      }
+
+      .rank-card-inner.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .rank-card-front,
+      .rank-card-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        padding: 25px;
+        border-radius: 12px;
+        background: var(--bg-white);
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .rank-card-back {
+        transform: rotateY(180deg);
+      }
+
+      .rank-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--bg-fill);
+      }
+
+      .rank-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .rank-list {
+        overflow-y: auto;
+      }
+
+      .rank-item {
+        display: grid;
+        grid-template-columns: 40px 40px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        transition: background 0.2s;
+      }
+
+      .rank-item:hover {
+        background: var(--bg-fill);
+      }
+
+      .rank-item.current-user {
+        background: #e6f7ff;
+      }
+
+      .rank-number {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .rank-number.top1 {
+        color: #ffd700;
+        font-size: 17px;
+      }
+
+      .rank-number.top2 {
+        color: #c0c0c0;
+        font-size: 17px;
+      }
+
+      .rank-number.top3 {
+        color: #cd7f32;
+        font-size: 17px;
+      }
+
+      .rank-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--primary-hover)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .rank-avatar.leetcode {
+        background: linear-gradient(135deg, #ffa502, #ff6348);
+      }
+
+      .rank-name {
+        font-size: 14px;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .rank-score {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--primary-blue);
+      }
+
+      /* 空状态 */
+      .empty-state {
+        text-align: center;
+        padding: 100px 20px;
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+
+      .empty-text {
+        font-size: 14px;
+        color: var(--text-tertiary);
+        margin-bottom: 8px;
+      }
+
+      .empty-hint {
+        font-size: 12px;
+        color: var(--border);
+      }
+
+      /* 页面切换提示 */
+      .page-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 12px;
+        z-index: 1000;
+      }
+
+      .page-indicator button {
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        margin-left: 10px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .page-indicator button:hover {
+        background: var(--primary-hover);
+      }
+
+      /* 滚动条美化 */
+      .rank-card-front::-webkit-scrollbar,
+      .rank-card-back::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .rank-card-front::-webkit-scrollbar-track,
+      .rank-card-back::-webkit-scrollbar-track {
+        background: var(--bg-fill);
+        border-radius: 3px;
+      }
+
+      .rank-card-front::-webkit-scrollbar-thumb,
+      .rank-card-back::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+
+      .rank-card-front::-webkit-scrollbar-thumb:hover,
+      .rank-card-back::-webkit-scrollbar-thumb:hover {
+        background: var(--text-tertiary);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 轮播背景 -->
+    <div class="carousel-container" id="carousel">
+      <div class="carousel-slide active"></div>
+      <div class="carousel-slide"></div>
+      <div class="carousel-slide"></div>
+      <div class="carousel-slide"></div>
+    </div>
+
+    <!-- 页面切换提示 -->
+    <div class="page-indicator">
+      <span id="pageStatus">当前：登录页面</span>
+      <button onclick="showHomePage()" id="homeBtn" style="display: none">
+        返回登录
+      </button>
+    </div>
+
+    <!-- ========== 登录注册页面 ========== -->
+    <div id="auth-page">
+      <div class="auth-box">
+        <!-- 登录表单 -->
+        <div class="auth-form active" id="login-form">
+          <div class="auth-logo">🎯</div>
+          <div class="auth-title">个人助手</div>
+
+          <div class="form-group">
+            <input type="text" class="form-input" placeholder="请输入手机号" />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-input"
+              placeholder="请输入密码"
+            />
+          </div>
+
+          <div class="captcha-container">
+            <div class="captcha-img">1a2b3c</div>
+            <button class="refresh-btn">🔄</button>
+            <input
+              type="text"
+              class="form-input"
+              placeholder="输入验证码"
+              style="flex: 1"
+            />
+          </div>
+
+          <button class="btn-primary" onclick="showHomePage()">登 录</button>
+
+          <div class="auth-toggle">
+            还没有账号？ <a onclick="toggleAuth('register')">立即注册 →</a>
+          </div>
+        </div>
+
+        <!-- 注册表单 -->
+        <div class="auth-form" id="register-form">
+          <div class="auth-logo">✨</div>
+          <div class="auth-title">创建新账号</div>
+
+          <div class="form-group">
+            <input type="text" class="form-input" placeholder="请输入用户名" />
+          </div>
+
+          <div class="form-group">
+            <input type="text" class="form-input" placeholder="请输入手机号" />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-input"
+              placeholder="请输入密码（8-16位）"
+            />
+          </div>
+
+          <div class="captcha-container">
+            <div class="captcha-img">4d5e6f</div>
+            <button class="refresh-btn">🔄</button>
+            <input
+              type="text"
+              class="form-input"
+              placeholder="输入验证码"
+              style="flex: 1"
+            />
+          </div>
+
+          <div class="form-group">
+            <select class="form-input">
+              <option>请选择组织</option>
+              <option>清华大学计算机系</option>
+              <option>北京大学软件学院</option>
+            </select>
+          </div>
+
+          <button class="btn-primary">注 册</button>
+
+          <div class="auth-toggle">
+            已有账号？ <a onclick="toggleAuth('login')">← 立即登录</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 登录后页面 ========== -->
+    <div id="home-page">
+      <!-- Header触发按钮 -->
+      <div class="header-trigger" id="headerTrigger">▼</div>
+
+      <!-- Header Bar -->
+      <div class="header-bar" id="headerBar">
+        <div class="header-content">
+          <div class="header-title">欢迎来到算法平台</div>
+          <div class="user-menu" onclick="toggleUserMenu()">
+            <div class="user-avatar">张</div>
+            <span style="font-size: 12px">▼</span>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-dropdown-item">👤 个人中心</div>
+              <div class="user-dropdown-item">📊 我的数据</div>
+              <div class="user-dropdown-item">⚙️ 设置</div>
+              <div class="user-dropdown-item logout" onclick="showAuthPage()">
+                🚪 退出登录
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <div class="cards-wrapper">
+          <div class="left-column">
+            <!-- 洛谷卡片 -->
+            <div class="card oj-card" onclick="flipCard(this, 'luogu')">
+              <div class="oj-card-inner">
+                <div class="oj-card-front">
+                  <div class="oj-logo luogu">洛</div>
+                  <div class="oj-title">洛 谷</div>
+                  <div class="oj-url">luogu.com.cn</div>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-input"
+                      placeholder="请输入洛谷ID"
+                    />
+                  </div>
+                  <button
+                    class="btn-primary"
+                    onclick="
+                      event.stopPropagation();
+                      submitCard(this, 'luogu');
+                    "
+                  >
+                    提 交
+                  </button>
+                </div>
+                <div class="oj-card-back">
+                  <div class="user-info-header">
+                    <div class="user-rank">🏆 排名: 5</div>
+                    <button
+                      class="edit-btn"
+                      onclick="
+                        event.stopPropagation();
+                        editCard(this, 'luogu');
+                      "
+                    >
+                      ✏ 修改
+                    </button>
+                  </div>
+                  <div class="user-profile">
+                    <div class="profile-avatar">张</div>
+                    <div class="profile-info">
+                      <h3>张三</h3>
+                      <div class="profile-stats">
+                        通过题目: <strong>150</strong>
+                      </div>
+                      <div class="profile-stats">
+                        Rating: <strong>2300</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="difficulty-stats">
+                    <div class="difficulty-item easy">
+                      <div class="difficulty-label">简单</div>
+                      <div class="difficulty-count">50</div>
+                    </div>
+                    <div class="difficulty-item medium">
+                      <div class="difficulty-label">中等</div>
+                      <div class="difficulty-count">70</div>
+                    </div>
+                    <div class="difficulty-item hard">
+                      <div class="difficulty-label">困难</div>
+                      <div class="difficulty-count">30</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 力扣卡片 -->
+            <div class="card oj-card" onclick="flipCard(this, 'leetcode')">
+              <div class="oj-card-inner">
+                <div class="oj-card-front">
+                  <div class="oj-logo leetcode">力</div>
+                  <div class="oj-title">力 扣</div>
+                  <div class="oj-url">leetcode.cn</div>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-input"
+                      placeholder="请输入力扣ID"
+                    />
+                  </div>
+                  <button
+                    class="btn-primary"
+                    onclick="
+                      event.stopPropagation();
+                      submitCard(this, 'leetcode');
+                    "
+                  >
+                    提 交
+                  </button>
+                </div>
+                <div class="oj-card-back">
+                  <div class="user-info-header">
+                    <div class="user-rank">🏆 排名: 2</div>
+                    <button
+                      class="edit-btn"
+                      onclick="
+                        event.stopPropagation();
+                        editCard(this, 'leetcode');
+                      "
+                    >
+                      ✏ 修改
+                    </button>
+                  </div>
+                  <div class="user-profile">
+                    <div class="profile-avatar leetcode">张</div>
+                    <div class="profile-info">
+                      <h3>张三</h3>
+                      <div class="profile-stats">
+                        通过题目: <strong>80</strong>
+                      </div>
+                      <div class="profile-stats">
+                        Score: <strong>2400</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="difficulty-stats">
+                    <div class="difficulty-item easy">
+                      <div class="difficulty-label">简单</div>
+                      <div class="difficulty-count">30</div>
+                    </div>
+                    <div class="difficulty-item medium">
+                      <div class="difficulty-label">中等</div>
+                      <div class="difficulty-count">40</div>
+                    </div>
+                    <div class="difficulty-item hard">
+                      <div class="difficulty-label">困难</div>
+                      <div class="difficulty-count">10</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 排行榜卡片 -->
+          <div class="card rank-card" onclick="flipRankCard()">
+            <div class="rank-card-inner">
+              <!-- 正面：洛谷排行榜 -->
+              <div class="rank-card-front">
+                <div class="rank-card-header">
+                  <div class="rank-title">🏆 洛谷排行榜</div>
+                </div>
+                <div class="rank-list">
+                  <div class="rank-item">
+                    <div class="rank-number top1">1</div>
+                    <div class="rank-avatar">王</div>
+                    <div class="rank-name">王五</div>
+                    <div class="rank-score">250 题</div>
+                  </div>
+                  <div class="rank-item">
+                    <div class="rank-number top2">2</div>
+                    <div class="rank-avatar">李</div>
+                    <div class="rank-name">李四</div>
+                    <div class="rank-score">200 题</div>
+                  </div>
+                  <div class="rank-item">
+                    <div class="rank-number top3">3</div>
+                    <div class="rank-avatar">赵</div>
+                    <div class="rank-name">赵六</div>
+                    <div class="rank-score">180 题</div>
+                  </div>
+                  <div class="rank-item current-user">
+                    <div class="rank-number">5</div>
+                    <div class="rank-avatar">张</div>
+                    <div class="rank-name">张三</div>
+                    <div class="rank-score">150 题</div>
+                  </div>
+                  <div class="rank-item">
+                    <div class="rank-number">6</div>
+                    <div class="rank-avatar">钱</div>
+                    <div class="rank-name">钱七</div>
+                    <div class="rank-score">120 题</div>
+                  </div>
+                  <div class="rank-item">
+                    <div class="rank-number">7</div>
+                    <div class="rank-avatar">孙</div>
+                    <div class="rank-name">孙八</div>
+                    <div class="rank-score">100 题</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 反面：力扣排行榜 -->
+              <div class="rank-card-back">
+                <div class="rank-card-header">
+                  <div class="rank-title">🏆 力扣排行榜</div>
+                </div>
+                <div class="rank-list">
+                  <div class="rank-item">
+                    <div class="rank-number top1">1</div>
+                    <div class="rank-avatar leetcode">王</div>
+                    <div class="rank-name">王五</div>
+                    <div class="rank-score">100 题</div>
+                  </div>
+                  <div class="rank-item current-user">
+                    <div class="rank-number top2">2</div>
+                    <div class="rank-avatar leetcode">张</div>
+                    <div class="rank-name">张三</div>
+                    <div class="rank-score">80 题</div>
+                  </div>
+                  <div class="rank-item">
+                    <div class="rank-number top3">3</div>
+                    <div class="rank-avatar leetcode">李</div>
+                    <div class="rank-name">李四</div>
+                    <div class="rank-score">70 题</div>
+                  </div>
+                  <div class="rank-item">
+                    <div class="rank-number">4</div>
+                    <div class="rank-avatar leetcode">赵</div>
+                    <div class="rank-name">赵六</div>
+                    <div class="rank-score">60 题</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ========== 轮播背景 ==========
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".carousel-slide");
+      const totalSlides = slides.length;
+
+      function nextSlide() {
+        slides[currentSlide].classList.remove("active");
+        currentSlide = (currentSlide + 1) % totalSlides;
+        slides[currentSlide].classList.add("active");
+      }
+
+      // 4秒自动轮播
+      setInterval(nextSlide, 4000);
+
+      // ========== 登录/注册切换 ==========
+      function toggleAuth(type) {
+        const loginForm = document.getElementById("login-form");
+        const registerForm = document.getElementById("register-form");
+
+        if (type === "register") {
+          loginForm.classList.remove("active");
+          registerForm.classList.add("active");
+        } else {
+          registerForm.classList.remove("active");
+          loginForm.classList.add("active");
+        }
+      }
+
+      // ========== 页面切换 ==========
+      function showHomePage() {
+        document.getElementById("auth-page").style.display = "none";
+        document.getElementById("home-page").style.display = "block";
+        document.getElementById("pageStatus").textContent =
+          "当前：首页（已登录）";
+        document.getElementById("homeBtn").style.display = "inline-block";
+        document.getElementById("homeBtn").textContent = "退出登录";
+      }
+
+      function showAuthPage() {
+        document.getElementById("home-page").style.display = "none";
+        document.getElementById("auth-page").style.display = "flex";
+        document.getElementById("pageStatus").textContent = "当前：登录页面";
+        document.getElementById("homeBtn").style.display = "none";
+
+        // 隐藏下拉菜单
+        document.getElementById("userDropdown").classList.remove("show");
+      }
+
+      // ========== Header Bar ==========
+      const headerTrigger = document.getElementById("headerTrigger");
+      const headerBar = document.getElementById("headerBar");
+
+      headerTrigger.addEventListener("mouseenter", function () {
+        headerBar.classList.add("show");
+      });
+
+      headerBar.addEventListener("mouseleave", function () {
+        headerBar.classList.remove("show");
+      });
+
+      // ========== 用户下拉菜单 ==========
+      function toggleUserMenu() {
+        const dropdown = document.getElementById("userDropdown");
+        dropdown.classList.toggle("show");
+      }
+
+      // 点击其他地方关闭下拉菜单
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".user-menu")) {
+          document.getElementById("userDropdown").classList.remove("show");
+        }
+      });
+
+      // ========== 卡片翻转 ==========
+      function flipCard(card, platform) {
+        const cardInner = card.querySelector(".oj-card-inner");
+        cardInner.classList.toggle("flipped");
+      }
+
+      function submitCard(btn, platform) {
+        // 模拟提交并翻转
+        const card = btn.closest(".oj-card");
+        const cardInner = card.querySelector(".oj-card-inner");
+        cardInner.classList.add("flipped");
+      }
+
+      function editCard(btn, platform) {
+        // 模拟编辑并翻回
+        const card = btn.closest(".oj-card");
+        const cardInner = card.querySelector(".oj-card-inner");
+        cardInner.classList.remove("flipped");
+      }
+
+      function flipRankCard() {
+        const rankCard = document.querySelector(".rank-card-inner");
+        rankCard.classList.toggle("flipped");
+      }
+    </script>
+  </body>
+</html>
