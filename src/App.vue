@@ -2,13 +2,15 @@
 /**
  * 应用根组件
  */
-import { onMounted } from 'vue'
+import { defineAsyncComponent, onMounted } from 'vue'
 import { useAuthStore } from '@/stores'
 import { useRouter } from 'vue-router'
-import { BackgroundCarousel } from '@/components/business/Carousel'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const BackgroundCarousel = defineAsyncComponent(
+  () => import('@/components/business/Carousel/BackgroundCarousel.vue')
+)
 
 // 初始化认证状态
 onMounted(() => {
@@ -24,7 +26,7 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <!-- 全局背景轮播 -->
-    <BackgroundCarousel />
+    <BackgroundCarousel/>
 
     <!-- 页面内容 -->
     <div class="page-content">

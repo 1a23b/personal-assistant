@@ -2,14 +2,18 @@
 /**
  * 首页
  */
-import { ref } from "vue";
-import { HeaderBar } from "@/components/layout";
-import OJCard from "@/components/business/OJCard/OJCard.vue";
-import LeaderboardCard from "@/components/business/LeaderboardCard/LeaderboardCard.vue";
+import { defineAsyncComponent, ref } from "vue";
+import type LeaderboardCardComponent from "@/components/business/LeaderboardCard/LeaderboardCard.vue";
 import type { OJStatsResponse } from "@/types";
 
+const HeaderBar = defineAsyncComponent(() => import("@/components/layout/HeaderBar.vue"));
+const OJCard = defineAsyncComponent(() => import("@/components/business/OJCard/OJCard.vue"));
+const LeaderboardCard = defineAsyncComponent(
+  () => import("@/components/business/LeaderboardCard/LeaderboardCard.vue")
+);
+
 // 排行榜组件引用
-const leaderboardRef = ref<InstanceType<typeof LeaderboardCard> | null>(null);
+const leaderboardRef = ref<InstanceType<typeof LeaderboardCardComponent> | null>(null);
 
 /**
  * 处理洛谷绑定成功

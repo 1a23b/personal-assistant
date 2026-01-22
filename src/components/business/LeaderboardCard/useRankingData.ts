@@ -23,7 +23,7 @@ export function useRankingData() {
   // 分页信息
   const luoguPage = ref(1)
   const leetcodePage = ref(1)
-  const pageSize = 8
+  const pageSize = 10
 
   // 洛谷排行榜数据
   const luoguRankList = ref<RankingItem[]>([])

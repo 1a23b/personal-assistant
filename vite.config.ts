@@ -3,7 +3,6 @@ import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,15 +13,10 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       AutoImport({
-        // Auto import Vue APIs and VueUse functions
         imports: ["vue", "vue-router", "pinia", "@vueuse/core"],
-        // Auto import Element Plus components
-        resolvers: [ElementPlusResolver()],
         dts: "src/auto-imports.d.ts",
       }),
       Components({
-        // Auto register Element Plus components
-        resolvers: [ElementPlusResolver()],
         dts: "src/components.d.ts",
       }),
     ],
@@ -53,7 +47,8 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            vendor: ["vue", "vue-router", "pinia", "element-plus"],
+            framework: ["vue", "vue-router", "pinia"],
+            http: ["axios"],
           },
         },
       },

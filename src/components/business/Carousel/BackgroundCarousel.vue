@@ -29,10 +29,22 @@ interface ImageData {
 
 // 背景图片列表（按优先级排序）
 const images = ref<ImageData[]>([
-  { src: new URL('@/assets/background/a.png', import.meta.url).href, loaded: false },
-  { src: new URL('@/assets/background/b.png', import.meta.url).href, loaded: false },
-  { src: new URL('@/assets/background/c.png', import.meta.url).href, loaded: false },
-  { src: new URL('@/assets/background/d.png', import.meta.url).href, loaded: false }
+  {
+    src: new URL('@/assets/background/a.avif', import.meta.url).href,
+    loaded: false
+  },
+  {
+    src: new URL('@/assets/background/b.avif', import.meta.url).href,
+    loaded: false
+  },
+  {
+    src: new URL('@/assets/background/c.avif', import.meta.url).href,
+    loaded: false
+  },
+  {
+    src: new URL('@/assets/background/d.avif', import.meta.url).href,
+    loaded: false
+  }
 ])
 
 const currentIndex = ref(0)
@@ -54,26 +66,21 @@ const handleImageLoad = (index: number) => {
 const lazyLoadImages = () => {
   // 跳过第一张（已在首屏加载）
   for (let i = 1; i < images.value.length; i++) {
-    const img = document.querySelector(`.carousel-item:nth-child(${i + 1})`) as HTMLImageElement
-
-    if (img && !images.value[i]?.loaded) {
-      const src = img.dataset.src
-
+    const img = document.querySelector(`.carousel-item:nth-child(${i + 1})`) as HTMLImageElement | null
+    if (!img || images.value[i]?.loaded) {
+      continue
+    }
+    const src = img.dataset.src
+    const setSources = () => {
       if (src) {
-        // 使用 requestIdleCallback 在浏览器空闲时加载
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(
-            () => {
-              img.src = src
-            },
-            { timeout: 2000 }
-          )
-        } else {
-          // 降级方案：使用 setTimeout
-          setTimeout(() => {
-            img.src = src
-          }, i * 500) // 每张图片间隔 500ms
-        }
+        img.src = src
+      }
+    }
+    if (src) {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(setSources, { timeout: 2000 })
+      } else {
+        setTimeout(setSources, i * 500)
       }
     }
   }
