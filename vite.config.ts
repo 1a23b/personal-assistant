@@ -43,13 +43,39 @@ export default defineConfig(({ mode }) => {
       target: "esnext",
       outDir: "dist",
       assetsDir: "assets",
-      sourcemap: mode === "development",
+      sourcemap: false,
+      // 启用 CSS 代码分割
+      cssCodeSplit: true,
+      // 资源内联限制（4KB以下的资源内联为 base64）
+      assetsInlineLimit: 4096,
+      // 设置 chunk 大小警告阈值
+      chunkSizeWarningLimit: 500,
       rollupOptions: {
         output: {
-          manualChunks: {
-            framework: ["vue", "vue-router", "pinia"],
-            http: ["axios"],
+          // 更细粒度的代码分割
+          manualChunks: (id) => {
+            // 分离 node_modules 中的依赖
+            if (id.includes('node_modules')) {
+              // Vue 核心库
+              if (id.includes('vue') || id.includes('@vue')) {
+                return 'vue-vendor';
+              }
+              // VueUse 工具库
+              if (id.includes('@vueuse')) {
+                return 'vueuse-vendor';
+              }
+              // HTTP 客户端
+              if (id.includes('axios')) {
+                return 'http-vendor';
+              }
+              // 其他第三方库
+              return 'vendor';
+            }
           },
+          // 文件命名（带 hash，利于缓存）
+          chunkFileNames: 'js/[name]-[hash].js',
+          entryFileNames: 'js/[name]-[hash].js',
+          assetFileNames: '[ext]/[name]-[hash].[ext]',
         },
       },
       esbuild: {

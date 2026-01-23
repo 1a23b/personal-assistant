@@ -7,7 +7,11 @@
       :data-src="image.src"
       :class="['carousel-item', { active: currentIndex === index, loaded: image.loaded }]"
       :alt="`Background ${index + 1}`"
+      :loading="index === 0 ? 'eager' : 'lazy'"
+      :decoding="'async'"
+      :fetchpriority="index === 0 ? 'high' : 'auto'"
       @load="handleImageLoad(index)"
+      @error="handleImageError(index)"
     />
   </div>
 </template>
@@ -18,6 +22,8 @@
  * - 首屏只加载第一张图片
  * - 延迟加载后续图片
  * - 使用 CSS transform 优化动画性能
+ * - 使用 fetchpriority 优化关键资源加载
+ * - 使用 decoding="async" 避免阻塞渲染
  */
 
 import { ref, onMounted, onUnmounted } from 'vue'
@@ -25,25 +31,30 @@ import { ref, onMounted, onUnmounted } from 'vue'
 interface ImageData {
   src: string
   loaded: boolean
+  error: boolean
 }
 
 // 背景图片列表（按优先级排序）
 const images = ref<ImageData[]>([
   {
     src: new URL('@/assets/background/a.avif', import.meta.url).href,
-    loaded: false
+    loaded: false,
+    error: false
   },
   {
     src: new URL('@/assets/background/b.avif', import.meta.url).href,
-    loaded: false
+    loaded: false,
+    error: false
   },
   {
     src: new URL('@/assets/background/c.avif', import.meta.url).href,
-    loaded: false
+    loaded: false,
+    error: false
   },
   {
     src: new URL('@/assets/background/d.avif', import.meta.url).href,
-    loaded: false
+    loaded: false,
+    error: false
   }
 ])
 
@@ -60,6 +71,16 @@ const handleImageLoad = (index: number) => {
 }
 
 /**
+ * 图片加载错误处理
+ */
+const handleImageError = (index: number) => {
+  if (images.value[index]) {
+    images.value[index].error = true
+    console.warn(`Background image ${index + 1} failed to load`)
+  }
+}
+
+/**
  * 延迟加载图片（性能优化）
  * 使用 requestIdleCallback 在浏览器空闲时加载
  */
@@ -67,19 +88,24 @@ const lazyLoadImages = () => {
   // 跳过第一张（已在首屏加载）
   for (let i = 1; i < images.value.length; i++) {
     const img = document.querySelector(`.carousel-item:nth-child(${i + 1})`) as HTMLImageElement | null
-    if (!img || images.value[i]?.loaded) {
+
+    if (!img || images.value[i]?.loaded || images.value[i]?.error) {
       continue
     }
+
     const src = img.dataset.src
     const setSources = () => {
       if (src) {
         img.src = src
       }
     }
+
     if (src) {
+      // 使用 requestIdleCallback 在浏览器空闲时加载
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(setSources, { timeout: 2000 })
+        requestIdleCallback(() => setSources(), { timeout: 2000 })
       } else {
+        // 降级方案：使用 setTimeout
         setTimeout(setSources, i * 500)
       }
     }
