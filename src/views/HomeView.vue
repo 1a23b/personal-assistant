@@ -48,11 +48,11 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
         <OJCard platform="leetcode" @bound="handleLeetcodeBound" />
       </div>
 
-      <!-- <div class="right-column"> -->
+      <div class="right-column">
 
       <!-- 右侧列：排行榜卡片 -->
         <LeaderboardCard ref="leaderboardRef" />
-      <!-- </div> -->
+      </div>
 
     </div>
   </div>
@@ -90,10 +90,11 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
   display: grid;
   grid-template-rows: 1fr 1fr;
   gap: 24px;
-  grid-row: 1 / 3;
+  /* grid-row: 1 / 3; */
 }
 .right-column{
   height: 100%;
+  width: 100%;
 }
 
 /* 右侧排行榜 */
@@ -133,20 +134,20 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
 
   /* 排行榜卡片在800px以下时也设置固定高度 */
   .left-column + * {
-    height: 560px;
+    /* height: 560px; */
   }
 }
 
 @media (max-width: 768px) {
   .cards-container {
+    display: block;
     gap: 16px;
     padding: 16px;
-    grid-template-columns: 1fr;
-    grid-auto-rows: auto;
   }
 
   .left-column {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    margin-bottom: 20px;
   }
 
   .left-column > * {
