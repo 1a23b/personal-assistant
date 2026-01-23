@@ -48,8 +48,12 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
         <OJCard platform="leetcode" @bound="handleLeetcodeBound" />
       </div>
 
+      <!-- <div class="right-column"> -->
+
       <!-- 右侧列：排行榜卡片 -->
-      <LeaderboardCard ref="leaderboardRef" />
+        <LeaderboardCard ref="leaderboardRef" />
+      <!-- </div> -->
+
     </div>
   </div>
 </template>
@@ -88,6 +92,9 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
   gap: 24px;
   grid-row: 1 / 3;
 }
+.right-column{
+  height: 100%;
+}
 
 /* 右侧排行榜 */
 .leaderboard-card-wrapper {
@@ -104,24 +111,22 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
 
 @media (max-width: 800px) {
   .cards-container {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 1fr;
     gap: 16px;
     max-width: none;
     padding-top: 24px;
   }
 
   .left-column {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    /* grid-template-columns: 1fr; */
+    /* grid-auto-rows: auto; */
     gap: 16px;
-    grid-row: auto;
-    grid-column: auto;
   }
 
   .left-column > * {
-    flex: 1 1 400px;
     max-width: 100%;
     height: 320px;
   }
@@ -136,14 +141,15 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
   .cards-container {
     gap: 16px;
     padding: 16px;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
   }
 
   .left-column {
-    flex-direction: column;
+    grid-template-columns: 1fr 1fr;
   }
 
   .left-column > * {
-    flex: none;
     width: 100%;
     height: 280px;
   }

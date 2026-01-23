@@ -20,6 +20,29 @@
         />
       </svg>
     </button>
+    <a
+      v-show="showNoticeButton"
+      class="notice-button"
+      :href="noticeLink"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="公告"
+      aria-label="公告"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 3a7 7 0 00-4 12.743V19a1 1 0 001 1h6a1 1 0 001-1v-3.257A7 7 0 0012 3zm-2 18h4m-3-4h2"
+        />
+      </svg>
+    </a>
 
     <!-- Header Bar -->
     <transition name="slide-down">
@@ -170,6 +193,9 @@ const dropdownRef = ref<HTMLElement | null>(null);
 
 // 用户信息
 const user = computed(() => authStore.user);
+const noticeLink =
+  "https://blog.csdn.net/2302_80067378/article/details/157281818?spm=1001.2014.3001.5501";
+const showNoticeButton = computed(() => !isVisible.value);
 
 /**
  * 切换 HeaderBar 显示/隐藏
@@ -211,7 +237,7 @@ const handleClickOutside = (event: MouseEvent) => {
  * 点击个人信息
  */
 const handleProfile = () => {
-  message.info("个人信息功能开发中");
+  router.push("/profile");
   closeDropdown();
 };
 
@@ -311,6 +337,39 @@ onUnmounted(() => {
 .trigger-button svg {
   width: 24px;
   height: 24px;
+  color: #595959;
+  transition: color 0.3s ease;
+}
+
+.notice-button {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  text-decoration: none;
+}
+
+.notice-button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+.notice-button svg {
+  width: 22px;
+  height: 22px;
   color: #595959;
   transition: color 0.3s ease;
 }
