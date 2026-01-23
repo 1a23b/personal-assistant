@@ -1,7 +1,3 @@
-/**
- * Axios 请求封装
- */
-
 import axios, { AxiosHeaders, type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
 import type { ApiResponse } from '@/types'
 import {
@@ -11,7 +7,6 @@ import {
 } from '@/constants/status'
 import { message } from '@/components/common'
 import { useAuthStore } from '@/stores/auth'
-
 
 export interface RequestConfig extends InternalAxiosRequestConfig {
   skipTip?: boolean
@@ -80,16 +75,12 @@ const refreshAccessToken = async (): Promise<string> => {
 const handleLogout = async () => {
   const authStore = useAuthStore()
   await authStore.logout({
-    skipTip: true,
-    skipSuccTip: true,
+    customSuccTip: '退出登录成功',
     skipErrTip: true
   })
   const { default: router } = await import('@/router')
   await router.replace('/login')
 }
-/**
- * Token 过期处理
- */
 const handleTokenExpired = async (_response: AxiosResponse, config: RequestConfig): Promise<any> => {
   if (config._retry) {
     await handleLogout()
@@ -171,7 +162,7 @@ const responseInterceptor = (
     }
   }
 
-  const errText = customErrTip || getFriendlyErrorMessage(res.code, res.tip, res.message || res.messages)
+  const errText = customErrTip || getFriendlyErrorMessage(res.code, res.error, res.message || res.messages)
 
   if (!skipTip && !skipErrTip) {
     if (res.code === StatusCode.FORBIDDEN) {

@@ -66,7 +66,7 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr;
   gap: 24px;
   padding: 24px;
   padding-top: 80px;

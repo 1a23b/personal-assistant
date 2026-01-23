@@ -71,19 +71,18 @@ const handleLogin = async () => {
     );
 
     if (result.success) {
-      // 登录成功，跳转到首页
       router.push("/home");
     } else {
-      // 失败（理论上不会走到这里，因为authStore.login会抛出错误）
       captchaRef.value?.refresh();
     }
   } catch (error: any) {
-    // ✅ 手动处理错误提示
-    // 优先显示后端返回的 error 字段，否则显示默认提示
-    const errorMsg = error.responseData?.error || "登录失败";
+    if(error?.code === 5000) {
+      message.warning("请检查网络或联系工作人员");
+      return;
+    }
+    const errorMsg = error?.error || "登录失败，请检查手机号、密码、验证码是否有误";
     message.error(errorMsg);
 
-    // 刷新验证码
     captchaRef.value?.refresh();
   } finally {
     loading.value = false;
