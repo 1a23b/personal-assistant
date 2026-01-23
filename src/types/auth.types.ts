@@ -12,11 +12,14 @@ export interface User {
   username: string
   phone: string
   email: string
+  openid: string
   avatar: string
   address: string
   signature: string
+  register: number
   freeze: boolean
   current_org_id: number
+  current_org?: Organization
   created_at: string
   updated_at: string
 }

@@ -52,23 +52,10 @@ export function login(
  * @param config 自定义请求配置
  */
 export function refreshToken(
+  refreshToken: string,
   config?: RequestOptions,
 ): Promise<RefreshTokenResponse> {
-  return apiClient.get("/refreshToken", config)
-}
-
-/**
- * 刷新 Access Token（拦截器内部使用）
- * 使用 POST 方法，通过请求体传递 refresh_token
- * 注意：这个函数返回的是原始 AxiosResponse，需要在 request.ts 中处理
- * @param refreshToken 刷新令牌
- */
-export function refreshAccessTokenPost(refreshToken: string) {
-  const data = {
-    'x-refresh-token': refreshToken
-  }
-  // 直接使用 axios 原始实例，避免拦截器循环
-  return apiClient.post("/refreshToken", data)
+  return apiClient.post("/refreshToken", { "x-refresh-token": refreshToken }, config)
 }
 
 /**

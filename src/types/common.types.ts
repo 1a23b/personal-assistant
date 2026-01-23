@@ -5,7 +5,8 @@
 // 统一 API 响应格式
 export interface ApiResponse<T = unknown> {
   code: number
-  message: string      // 【技术文案】后端原始消息，用于调试和日志
+  message?: string      // 【技术文案】后端原始消息，用于调试和日志
+  messages?: string
   data: T
   error?: string       // 错误详情字段
   tip?: string         // ✅【用户友好提示】专门给前端弹窗展示的友好文案

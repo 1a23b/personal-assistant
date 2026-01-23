@@ -74,20 +74,8 @@ export const useAuthStore = defineStore('auth', () => {
     setUser(userData)
     setToken(access_token, access_token_expires_at)
 
-    // 如果响应体中有 refresh_token，存储到 localStorage
     if (refresh_token) {
       setRefreshToken(refresh_token)
-      console.log('[Auth Login] refresh_token from response body')
-    } else {
-      // 否则检查 Cookie
-      console.log('[Auth Login] Checking cookies for refresh_token...')
-      console.log('[Auth Login] document.cookie:', document.cookie)
-      const cookieToken = document.cookie.match(/(?:^|; )x-refresh-token=([^;]*)/)
-      if (cookieToken) {
-        console.log('[Auth Login] Found x-refresh-token in cookie')
-      } else {
-        console.warn('[Auth Login] No refresh_token found in response body or cookie')
-      }
     }
 
     return { success: true }

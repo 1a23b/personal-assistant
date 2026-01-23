@@ -91,6 +91,7 @@ const handleRegister = async () => {
       user: userData,
       access_token,
       access_token_expires_at,
+      refresh_token,
     } = await registerApi(
       {
         username: realName.value,
@@ -108,6 +109,9 @@ const handleRegister = async () => {
     // ✅ 保存用户信息和 Token（自动登录）
     authStore.setUser(userData);
     authStore.setToken(access_token, access_token_expires_at);
+    if (refresh_token) {
+      authStore.setRefreshToken(refresh_token);
+    }
 
     // ✅ 注册成功后跳转到首页
     setTimeout(() => {
