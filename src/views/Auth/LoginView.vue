@@ -20,9 +20,9 @@ const captcha = ref("");
 const captchaId = ref("");
 
 // 状态
-const loading = ref(false);
+const loading = ref(false);//当true时显示加载并禁用
 const agreeTerms = ref(false);
-const showSkeleton = ref(true);
+const showSkeleton = ref(true);//是否显示骨架屏，用于过渡
 
 // 验证码组件引用
 const captchaRef = ref<InstanceType<typeof Captcha>>();

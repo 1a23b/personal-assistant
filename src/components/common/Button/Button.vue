@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
   htmlType: 'button',
   block: false,
   ghost: false,
-  danger: false
+  danger: false,
 })
 
 const emit = defineEmits<{

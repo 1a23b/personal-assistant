@@ -46,7 +46,7 @@
 
     <!-- Header Bar -->
     <transition name="slide-down">
-      <div v-if="isVisible" class="header-bar">
+      <div v-if="isVisible" class="header-bar" :class="{ 'console-mode': isConsolePage }">
         <div class="header-bar-content">
           <!-- Logo -->
           <div class="logo">
@@ -158,6 +158,11 @@
                 </div>
               </transition>
             </div>
+
+            <!-- 控制台/首页按钮 -->
+            <button class="console-button" @click="handleNavigation" :title="isConsolePage ? '返回首页' : '控制台'">
+              <span>{{ isConsolePage ? '首页' : '控制台' }}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -172,15 +177,25 @@
  * 用户头像在右侧，点击显示下拉菜单
  */
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { message } from "@/components/common";
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
+
+// 判断是否在控制台页面
+const isConsolePage = computed(() => route.path.startsWith('/console'));
 
 // 是否显示 Header Bar
 const isVisible = ref(false);
+
+// 监听路由变化，切换页面时默认隐藏
+import { watch } from 'vue';
+watch(() => route.path, () => {
+  isVisible.value = false;
+});
 
 // 是否显示下拉菜单
 const isDropdownVisible = ref(false);
@@ -239,6 +254,24 @@ const handleClickOutside = (event: MouseEvent) => {
 const handleProfile = () => {
   router.push("/profile");
   closeDropdown();
+};
+
+/**
+ * 跳转到控制台或首页
+ */
+const handleNavigation = () => {
+  // 先收起 HeaderBar
+  isVisible.value = false;
+  isDropdownVisible.value = false;
+  
+  // 等待动画结束后跳转
+  setTimeout(() => {
+    if (isConsolePage.value) {
+      router.push("/home");
+    } else {
+      router.push("/console");
+    }
+  }, 300);
 };
 
 /**
@@ -621,10 +654,48 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+.header-bar.console-mode {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
 .slide-down-enter-to,
 .slide-down-leave-from {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* 控制台按钮 */
+.console-button {
+  height: 40px;
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #595959;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.console-button:hover {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: white;
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.console-button span {
+  line-height: 1;
 }
 
 /* 响应式 */

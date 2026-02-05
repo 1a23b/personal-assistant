@@ -19,8 +19,13 @@ export interface RequestConfig extends InternalAxiosRequestConfig {
 
 export type RequestOptions = Partial<Pick<RequestConfig, 'skipTip' | 'skipErrTip' | 'skipSuccTip' | 'customErrTip' | 'customSuccTip'>>
 
+const apiBaseURL =
+  import.meta.env.DEV && import.meta.env.VITE_API_PREFIX
+    ? import.meta.env.VITE_API_PREFIX
+    : import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
 const apiClientRaw: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  baseURL: apiBaseURL,
   timeout: 10000,
   withCredentials: true,
   headers: {

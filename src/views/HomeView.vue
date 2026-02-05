@@ -3,6 +3,7 @@
  * 首页
  */
 import { defineAsyncComponent, ref } from "vue";
+import { onBeforeRouteLeave } from "vue-router";
 import type LeaderboardCardComponent from "@/components/business/LeaderboardCard/LeaderboardCard.vue";
 import type { OJStatsResponse } from "@/types";
 
@@ -12,8 +13,24 @@ const LeaderboardCard = defineAsyncComponent(
   () => import("@/components/business/LeaderboardCard/LeaderboardCard.vue")
 );
 
+// 动画状态
+const isExiting = ref(false);
+
 // 排行榜组件引用
 const leaderboardRef = ref<InstanceType<typeof LeaderboardCardComponent> | null>(null);
+
+// 路由离开前的守卫
+onBeforeRouteLeave((to, from, next) => {
+  if (to.path.startsWith('/console')) {
+    isExiting.value = true;
+    // 等待动画完成
+    setTimeout(() => {
+      next();
+    }, 600); // 略长于 CSS transition 时间 (500ms)
+  } else {
+    next();
+  }
+});
 
 /**
  * 处理洛谷绑定成功
@@ -40,7 +57,7 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
     <!-- 卡片容器 -->
     <div class="cards-container">
       <!-- 左侧列：OJ 卡片 -->
-      <div class="left-column">
+      <div class="left-column" :class="{ 'slide-out-left': isExiting }">
         <!-- 洛谷绑定卡片 -->
         <OJCard platform="luogu" @bound="handleLuoguBound" />
 
@@ -48,7 +65,7 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
         <OJCard platform="leetcode" @bound="handleLeetcodeBound" />
       </div>
 
-      <div class="right-column">
+      <div class="right-column" :class="{ 'slide-out-right': isExiting }">
 
       <!-- 右侧列：排行榜卡片 -->
         <LeaderboardCard ref="leaderboardRef" />
@@ -73,7 +90,7 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
   grid-template-rows: 1fr;
   gap: 24px;
   padding: 24px;
-  padding-top: 80px;
+  padding-top: 40px;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
@@ -91,10 +108,47 @@ const handleLeetcodeBound = (_data: OJStatsResponse) => {
   grid-template-rows: 1fr 1fr;
   gap: 24px;
   /* grid-row: 1 / 3; */
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  animation: slide-in-left 0.6s ease-out backwards;
 }
+
+.left-column.slide-out-left {
+  transform: translateX(-120vw);
+  opacity: 0;
+}
+
 .right-column{
   height: 100%;
   width: 100%;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  animation: slide-in-right 0.6s ease-out backwards;
+}
+
+.right-column.slide-out-right {
+  transform: translateX(120vw);
+  opacity: 0;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* 右侧排行榜 */
