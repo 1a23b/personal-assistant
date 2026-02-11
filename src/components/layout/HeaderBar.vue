@@ -20,29 +20,6 @@
         />
       </svg>
     </button>
-    <a
-      v-show="showNoticeButton"
-      class="notice-button"
-      :href="noticeLink"
-      target="_blank"
-      rel="noopener noreferrer"
-      title="公告"
-      aria-label="公告"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 3a7 7 0 00-4 12.743V19a1 1 0 001 1h6a1 1 0 001-1v-3.257A7 7 0 0012 3zm-2 18h4m-3-4h2"
-        />
-      </svg>
-    </a>
 
     <!-- Header Bar -->
     <transition name="slide-down">
@@ -208,9 +185,6 @@ const dropdownRef = ref<HTMLElement | null>(null);
 
 // 用户信息
 const user = computed(() => authStore.user);
-const noticeLink =
-  "https://blog.csdn.net/2302_80067378/article/details/157281818?spm=1001.2014.3001.5501";
-const showNoticeButton = computed(() => !isVisible.value);
 
 /**
  * 切换 HeaderBar 显示/隐藏
