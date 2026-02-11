@@ -11,7 +11,9 @@ export interface MenuItem {
   code: string
   type: number
   icon?: string
+  route_name?: string
   route_path?: string
+  route_param?: string
   component_path?: string
   status: number
   sort: number
@@ -33,7 +35,9 @@ export interface CreateMenuRequest {
   code: string
   type: number
   icon?: string
+  route_name?: string
   route_path?: string
+  route_param?: string
   component_path?: string
   status?: number
   sort?: number
@@ -46,7 +50,9 @@ export interface UpdateMenuRequest {
   code?: string
   type?: number
   icon?: string
+  route_name?: string
   route_path?: string
+  route_param?: string
   component_path?: string
   status?: number
   sort?: number
@@ -185,7 +191,6 @@ export interface ApiItem {
   path: string
   method: string
   detail?: string
-  group_id?: number
   status: number
   created_at?: string
   updated_at?: string
@@ -202,7 +207,6 @@ export interface CreateApiRequest {
   path: string
   method: string
   detail?: string
-  group_id?: number
   status?: number
 }
 
@@ -210,7 +214,6 @@ export interface UpdateApiRequest {
   path?: string
   method?: string
   detail?: string
-  group_id?: number
   status?: number
 }
 

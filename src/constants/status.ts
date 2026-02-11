@@ -163,7 +163,7 @@ export function getStatusMessage(
  * 判断是否为成功状态码
  */
 export function isSuccessStatusCode(code: number): boolean {
-  return code === StatusCode.SUCCESS
+  return code === StatusCode.SUCCESS || code === 200
 }
 
 /**
