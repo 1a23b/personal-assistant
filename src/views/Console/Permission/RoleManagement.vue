@@ -117,7 +117,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  修改按钮
+                  修改权限
                 </button>
                 <button @click="openEditModal(role)" class="btn-xs btn-primary">
                   编辑
@@ -256,7 +256,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <h3>修改按钮 - {{ permissionRole.name }}</h3>
+            <h3>修改权限 - {{ permissionRole.name }}</h3>
           </div>
           <button @click="closePermissionModal" class="icon-btn">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -270,27 +270,44 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="icon text-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              <span>功能按钮</span>
+              <span>功能权限</span>
             </div>
             <div class="panel-content custom-scrollbar">
               <div v-for="item in functionalPermissions" :key="item.id" class="permission-item">
                 <div class="permission-row">
-                  <button @click="item.expanded = !item.expanded" class="expand-btn">
+                  <button v-if="item.children && item.children.length" @click="item.expanded = !item.expanded" class="expand-btn">
                     <svg :class="['icon-sm transition-transform', item.expanded ? 'rotate-90' : '']" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
+                  <div v-else style="width: 16px; height: 16px;"></div>
                   <label class="checkbox-label">
                     <input type="checkbox" :checked="isMenuChecked(item.id)" @change="toggleMenuSelection(item)" class="checkbox-input" />
                     <span>{{ item.label }}</span>
                   </label>
                 </div>
                 <div v-if="item.children && item.expanded" class="permission-children">
-                  <div v-for="child in item.children" :key="child.id" class="permission-child">
-                    <label class="checkbox-label">
-                      <input type="checkbox" :checked="isMenuChecked(child.id)" @change="toggleMenuSelection(child)" class="checkbox-input" />
-                      <span>{{ child.label }}</span>
-                    </label>
+                  <div v-for="child in item.children" :key="child.id" class="permission-item">
+                    <div class="permission-row">
+                      <button v-if="child.children && child.children.length" @click="child.expanded = !child.expanded" class="expand-btn">
+                        <svg :class="['icon-sm transition-transform', child.expanded ? 'rotate-90' : '']" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                      <div v-else style="width: 16px; height: 16px;"></div>
+                      <label class="checkbox-label">
+                        <input type="checkbox" :checked="isMenuChecked(child.id)" @change="toggleMenuSelection(child)" class="checkbox-input" />
+                        <span>{{ child.label }}</span>
+                      </label>
+                    </div>
+                    <div v-if="child.children && child.expanded" class="permission-children">
+                      <div v-for="grandChild in child.children" :key="grandChild.id" class="permission-child">
+                        <label class="checkbox-label">
+                          <input type="checkbox" :checked="isMenuChecked(grandChild.id)" @change="toggleMenuSelection(grandChild)" class="checkbox-input" />
+                          <span>{{ grandChild.label }}</span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -301,24 +318,44 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="icon text-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span>数据按钮</span>
+              <span>数据权限</span>
             </div>
             <div class="panel-content custom-scrollbar">
-              <div v-for="group in dataPermissions" :key="group.id" class="permission-item">
+              <div v-for="item in dataPermissions" :key="item.id" class="permission-item">
                 <div class="permission-row">
-                  <button @click="group.expanded = !group.expanded" class="expand-btn">
-                    <svg :class="['icon-sm transition-transform', group.expanded ? 'rotate-90' : '']" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <button v-if="item.children && item.children.length" @click="item.expanded = !item.expanded" class="expand-btn">
+                    <svg :class="['icon-sm transition-transform', item.expanded ? 'rotate-90' : '']" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
-                  <span>{{ group.label }}</span>
+                  <div v-else style="width: 16px; height: 16px;"></div>
+                  <label class="checkbox-label">
+                    <input type="checkbox" :checked="isApiChecked(item.id)" @change="toggleApiSelection(item)" class="checkbox-input" />
+                    <span>{{ item.label }}</span>
+                  </label>
                 </div>
-                <div v-if="group.children && group.expanded" class="permission-children">
-                  <div v-for="api in group.children" :key="api.id" class="permission-child">
-                    <label class="checkbox-label">
-                      <input type="checkbox" :checked="isApiChecked(api.id)" @change="toggleApiSelection(api.id)" class="checkbox-input" />
-                      <span>{{ api.label }}</span>
-                    </label>
+                <div v-if="item.children && item.expanded" class="permission-children">
+                  <div v-for="child in item.children" :key="child.id" class="permission-item">
+                    <div class="permission-row">
+                      <button v-if="child.children && child.children.length" @click="child.expanded = !child.expanded" class="expand-btn">
+                        <svg :class="['icon-sm transition-transform', child.expanded ? 'rotate-90' : '']" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                      <div v-else style="width: 16px; height: 16px;"></div>
+                      <label class="checkbox-label">
+                        <input type="checkbox" :checked="isApiChecked(child.id)" @change="toggleApiSelection(child)" class="checkbox-input" />
+                        <span>{{ child.label }}</span>
+                      </label>
+                    </div>
+                    <div v-if="child.children && child.expanded" class="permission-children">
+                      <div v-for="grandChild in child.children" :key="grandChild.id" class="permission-child">
+                        <label class="checkbox-label">
+                          <input type="checkbox" :checked="isApiChecked(grandChild.id)" @change="toggleApiSelection(grandChild)" class="checkbox-input" />
+                          <span>{{ grandChild.label }}</span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -593,19 +630,97 @@ const permissionRole = reactive({
 })
 
 const functionalPermissions = ref<PermissionNode[]>([
-  { id: 101, label: '用户管理', expanded: true, children: [{ id: 102, label: '新增用户' }, { id: 103, label: '删除用户' }] },
-  { id: 201, label: '组织管理', expanded: true, children: [{ id: 202, label: '新增组织' }, { id: 203, label: '删除组织' }] }
+  { 
+    id: 1000, 
+    label: '权限管理', 
+    expanded: true, 
+    children: [
+      { 
+        id: 1100, 
+        label: '角色管理', 
+        expanded: true,
+        children: [
+          { id: 1101, label: '新增角色管理' },
+          { id: 1102, label: '编辑角色信息' },
+          { id: 1103, label: '修改角色权限' },
+          { id: 1104, label: '删除角色' }
+        ]
+      },
+      { 
+        id: 1200, 
+        label: 'API管理', 
+        expanded: true,
+        children: [
+          { id: 1201, label: '新增API管理' },
+          { id: 1202, label: '编辑API信息' },
+          { id: 1203, label: '删除API' }
+        ]
+      },
+      { 
+        id: 1300, 
+        label: '菜单管理', 
+        expanded: true,
+        children: [
+          { id: 1301, label: '新增菜单管理' },
+          { id: 1302, label: '编辑菜单信息' },
+          { id: 1303, label: '删除菜单' }
+        ]
+      }
+    ]
+  },
+  { id: 2000, label: '人员管理', expanded: true },
+  { id: 3000, label: '组织管理', expanded: true },
+  { id: 4000, label: '我的团队', expanded: true }
 ])
 const dataPermissions = ref<PermissionNode[]>([
-  { id: 301, label: '评论管理', expanded: true, children: [{ id: 302, label: 'GET /order/back/comment/list' }, { id: 303, label: 'PUT /order/back/comment/convert' }] },
-  { id: 401, label: '轮播图', expanded: true, children: [{ id: 402, label: 'GET /carousel/list' }, { id: 403, label: 'DELETE /carousel/delete' }] }
+  {
+    id: 5000,
+    label: '权限管理',
+    expanded: true,
+    children: [
+      {
+        id: 5100,
+        label: '角色管理',
+        expanded: true,
+        children: [
+          { id: 5101, label: 'POST /system/role' },
+          { id: 5102, label: 'PUT /system/role/{id}' },
+          { id: 5103, label: 'DELETE /system/role/{id}' }
+        ]
+      },
+      {
+        id: 5200,
+        label: 'API管理',
+        expanded: true,
+        children: [
+          { id: 5201, label: 'POST /system/api' },
+          { id: 5202, label: 'PUT /system/api/{id}' },
+          { id: 5203, label: 'DELETE /system/api/{id}' }
+        ]
+      },
+      {
+        id: 5300,
+        label: '菜单管理',
+        expanded: true,
+        children: [
+          { id: 5301, label: 'POST /system/menu' },
+          { id: 5302, label: 'PUT /system/menu/{id}' },
+          { id: 5303, label: 'DELETE /system/menu/{id}' }
+        ]
+      }
+    ]
+  }
 ])
 const selectedMenuIds = ref<Set<number>>(new Set())
 const selectedApiIds = ref<Set<number>>(new Set())
 
 const collectMenuIds = (node: PermissionNode): number[] => {
   const ids = [node.id]
-  if (node.children) node.children.forEach(c => ids.push(c.id))
+  if (node.children) {
+    node.children.forEach(child => {
+      ids.push(...collectMenuIds(child))
+    })
+  }
   return ids
 }
 
@@ -625,10 +740,12 @@ const toggleMenuSelection = (node: PermissionNode) => {
 
 const isApiChecked = (id: number) => selectedApiIds.value.has(id)
 
-const toggleApiSelection = (id: number) => {
+const toggleApiSelection = (node: PermissionNode) => {
+  const ids = collectMenuIds(node)
+  const shouldSelect = ids.some(id => !selectedApiIds.value.has(id))
+  
   const next = new Set(selectedApiIds.value)
-  if (next.has(id)) next.delete(id)
-  else next.add(id)
+  ids.forEach(id => shouldSelect ? next.add(id) : next.delete(id))
   selectedApiIds.value = next
 }
 
@@ -644,7 +761,7 @@ const closePermissionModal = () => {
 
 const savePermission = () => {
   closePermissionModal()
-  message.success('按钮已保存')
+  message.success('权限已保存')
 }
 
 const changePage = (page: number) => {
@@ -869,9 +986,10 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
+  padding: 2px 8px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .checkbox-label:hover {
@@ -1050,8 +1168,8 @@ onMounted(() => {
 }
 
 .large-modal {
-  width: 900px;
-  height: 600px;
+  width: 1000px;
+  height: 750px;
   display: flex;
   flex-direction: column;
 }
@@ -1177,29 +1295,35 @@ onMounted(() => {
   display: flex;
   gap: 24px;
   overflow: hidden;
+  font-size: 13px;
 }
 
 .permission-panel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  border: 1px solid #f3f4f6;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.permission-panel:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .panel-header {
-  padding: 12px;
-  border-bottom: 1px solid #f3f4f6;
-  background-color: #f9fafb;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f8fafc;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-weight: 500;
-  color: #374151;
+  justify-content: flex-start;
+  gap: 12px;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .text-orange {
@@ -1217,14 +1341,14 @@ onMounted(() => {
 }
 
 .permission-item {
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 
 .permission-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  padding: 2px 0;
 }
 
 .expand-btn {
@@ -1248,10 +1372,13 @@ onMounted(() => {
 }
 
 .permission-children {
-  margin-left: 24px;
+  margin-left: 20px;
+  padding-left: 16px;
+  border-left: 2px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
