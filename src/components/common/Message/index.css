@@ -4,16 +4,119 @@
 
 .message-container {
   position: fixed;
-  top: 20px;
+  top: 24px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 3000;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   pointer-events: none;
 }
 
 .message-wrapper {
   pointer-events: auto;
+}
+
+.message-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: unset;
+  max-width: 480px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow:
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.88);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+}
+
+/* 消息类型 - 移除左边框，仅保留图标颜色 */
+.message-success .message-icon {
+  color: #52c41a;
+}
+
+.message-error .message-icon {
+  color: #ff4d4f;
+}
+
+.message-warning .message-icon {
+  color: #faad14;
+}
+
+.message-info .message-icon {
+  color: #1677ff;
+}
+
+/* 图标 */
+.message-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.message-icon svg {
+  width: 1em;
+  height: 1em;
+}
+
+/* 内容 */
+.message-content {
+  flex: 1;
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: 400;
+}
+
+/* 关闭按钮 */
+.message-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.message-close:hover {
+  color: #4b5563;
+  background-color: #f3f4f6;
+}
+
+.message-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* 动画 - 更加平滑的下落淡入 */
+.message-slide-enter-active,
+.message-slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.message-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+}
+
+.message-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
 }

@@ -64,7 +64,17 @@ const inputClass = computed(() => {
 // 处理输入事件
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  emit('update:modelValue', target.value)
+  let value: string | number = target.value
+  if (props.type === 'number') {
+    const num = parseFloat(value)
+    if (!isNaN(num)) {
+      value = num
+    } else if (value === '') {
+      // Keep empty string if input is cleared
+      value = ''
+    }
+  }
+  emit('update:modelValue', value)
 }
 
 // 处理聚焦事件
